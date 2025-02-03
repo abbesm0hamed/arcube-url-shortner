@@ -6,8 +6,6 @@ import {
   Body,
   Query,
   Res,
-  HttpStatus,
-  UsePipes,
   ParseIntPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
