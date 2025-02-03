@@ -7,6 +7,7 @@ import {
   Query,
   Res,
   ParseIntPipe,
+  HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UrlService } from './url.service';
@@ -40,7 +41,7 @@ export class UrlController {
     @Res() res: Response,
   ) {
     const url = await this.urlService.getOriginalUrl(shortCode);
-    return res.status(301).redirect(url.originalUrl);
+    return res.redirect(HttpStatus.MOVED_PERMANENTLY, url.originalUrl);
   }
 
   @Get('urls/list')

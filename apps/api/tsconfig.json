@@ -18,6 +18,11 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": false,
+    "paths": {
+      "src/*": ["src/*"]
+    }
   },
   "include": [
     "src/**/*"
