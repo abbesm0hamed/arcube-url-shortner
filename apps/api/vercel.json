@@ -19,9 +19,6 @@
       ]
     }
   ],
-  "env": {
-    "NODE_ENV": "production"
-  },
   "functions": {
     "dist/main.js": {
       "maxDuration": 30
