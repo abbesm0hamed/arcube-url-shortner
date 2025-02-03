@@ -1,6 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "pnpm run vercel-build",
+  "buildCommand": "npx prisma generate && pnpm run build",
+  "installCommand": "pnpm install",
   "builds": [
     {
       "src": "src/main.ts",
