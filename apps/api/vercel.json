@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "npx prisma generate && pnpm run build",
+  "installCommand": "pnpm install",
   "builds": [
     {
       "src": "dist/main.js",
