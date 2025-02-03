@@ -21,7 +21,9 @@
     "esModuleInterop": true,
     "strict": false,
     "paths": {
-      "src/*": ["src/*"]
+      "src/*": [
+        "src/*"
+      ]
     }
   },
   "include": [

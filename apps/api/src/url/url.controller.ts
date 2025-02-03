@@ -41,6 +41,7 @@ export class UrlController {
     @Res() res: Response,
   ): Promise<void> {
     const url = await this.urlService.getOriginalUrl(shortCode);
+    // @ts-ignore;
     res.redirect(301, url.originalUrl);
   }
 
