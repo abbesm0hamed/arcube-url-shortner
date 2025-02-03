@@ -41,9 +41,7 @@ export class UrlController {
     @Res() res: Response,
   ): Promise<void> {
     const url = await this.urlService.getOriginalUrl(shortCode);
-    res.setHeader('Location', url.originalUrl);
-    res.statusCode = HttpStatus.MOVED_PERMANENTLY;
-    res.end();
+    res.redirect(301, url.originalUrl);
   }
 
   @Get('urls/list')
