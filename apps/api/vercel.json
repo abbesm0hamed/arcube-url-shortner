@@ -3,11 +3,7 @@
   "builds": [
     {
       "src": "src/main.ts",
-      "use": "@vercel/node",
-      "config": {
-        "installCommand": "pnpm install",
-        "buildCommand": "pnpm run vercel-build"
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -22,8 +18,5 @@
         "OPTIONS"
       ]
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }

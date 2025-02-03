@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 import { DatabaseService } from 'src/database/database.service';
+import { UrlModel, IUrl } from 'src/database/url.model';
 
 @Injectable()
 export class UrlService {
-  constructor(private prisma: DatabaseService) { }
+  constructor(private database: DatabaseService) { }
 
   private normalizeUrl(url: string): string {
     try {
@@ -21,36 +22,34 @@ export class UrlService {
   async createShortUrl(originalUrl: string) {
     const normalizedUrl = this.normalizeUrl(originalUrl);
 
-    const existingUrl = await this.prisma.url.findFirst({
-      where: { originalUrl: normalizedUrl },
-    });
+    const existingUrl = await UrlModel.findOne({ originalUrl: normalizedUrl });
 
     if (existingUrl) {
       return existingUrl;
     }
 
     const shortCode = nanoid(8);
-    return this.prisma.url.create({
-      data: {
-        originalUrl: normalizedUrl,
-        shortCode,
-      },
+    const newUrl = new UrlModel({
+      originalUrl: normalizedUrl,
+      shortCode,
+      clicks: 0
     });
+
+    return await newUrl.save();
   }
 
   async getOriginalUrl(shortCode: string) {
-    const url = await this.prisma.url.findUnique({
-      where: { shortCode },
-    });
+    const url = await UrlModel.findOne({ shortCode });
 
     if (!url) {
       throw new NotFoundException('Short URL not found');
     }
 
-    this.prisma.url.update({
-      where: { id: url.id },
-      data: { clicks: { increment: 1 } },
-    }).catch(error => {
+    // Update click count
+    UrlModel.updateOne(
+      { _id: url._id },
+      { $inc: { clicks: 1 } }
+    ).catch(error => {
       console.error('Failed to update click count:', error);
     });
 
@@ -59,19 +58,13 @@ export class UrlService {
 
   async getAllUrls(limit = 100, offset = 0) {
     const [urls, total] = await Promise.all([
-      this.prisma.url.findMany({
-        orderBy: { createdAt: 'desc' },
-        take: limit,
-        skip: offset,
-        select: {
-          id: true,
-          originalUrl: true,
-          shortCode: true,
-          createdAt: true,
-          clicks: true,
-        },
-      }),
-      this.prisma.url.count(),
+      UrlModel.find()
+        .sort({ createdAt: -1 })
+        .skip(offset)
+        .limit(limit)
+        .select('originalUrl shortCode createdAt clicks')
+        .exec(),
+      UrlModel.countDocuments()
     ]);
 
     return {
@@ -86,9 +79,7 @@ export class UrlService {
   }
 
   async getUrlStats(shortCode: string) {
-    const url = await this.prisma.url.findUnique({
-      where: { shortCode },
-    });
+    const url = await UrlModel.findOne({ shortCode });
 
     if (!url) {
       throw new NotFoundException('URL not found');
