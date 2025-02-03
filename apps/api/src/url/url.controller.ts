@@ -39,9 +39,11 @@ export class UrlController {
   async redirectToOriginalUrl(
     @Param('shortCode') shortCode: string,
     @Res() res: Response,
-  ) {
+  ): Promise<void> {
     const url = await this.urlService.getOriginalUrl(shortCode);
-    return res.redirect(HttpStatus.MOVED_PERMANENTLY, url.originalUrl);
+    res.setHeader('Location', url.originalUrl);
+    res.statusCode = HttpStatus.MOVED_PERMANENTLY;
+    res.end();
   }
 
   @Get('urls/list')
