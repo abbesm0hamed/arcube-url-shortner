@@ -1,17 +1,17 @@
 {
   "version": 2,
-  "buildCommand": "npx prisma generate && pnpm run build",
+  "buildCommand": "pnpm install && pnpm run vercel-build",
   "installCommand": "pnpm install",
   "builds": [
     {
-      "src": "src/main.ts",
+      "src": "dist/main.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/main.ts",
+      "dest": "dist/main.js",
       "methods": [
         "GET",
         "POST",
@@ -25,7 +25,7 @@
     "NODE_ENV": "production"
   },
   "functions": {
-    "src/main.ts": {
+    "dist/main.js": {
       "maxDuration": 30
     }
   }

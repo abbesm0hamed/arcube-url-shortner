@@ -25,7 +25,7 @@ export class UrlController {
     @Query('preview') preview?: boolean,
   ) {
     const url = await this.urlService.createShortUrl(createUrlDto.originalUrl);
-    const baseUrl = process.env.API_URL || `http://localhost:${process.env.API_URL}`;
+    const baseUrl = process.env.API_URL || `http://localhost:${process.env.API_PORT}`;
     const shortUrl = `${baseUrl}/${url.shortCode}`;
 
     return {
@@ -42,7 +42,7 @@ export class UrlController {
     @Res() res: Response,
   ) {
     const url = await this.urlService.getOriginalUrl(shortCode);
-    return res.redirect(HttpStatus.MOVED_PERMANENTLY, url.originalUrl);
+    return res.status(301).redirect(url.originalUrl);
   }
 
   @Get('urls/list')
